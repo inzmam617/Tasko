@@ -11,34 +11,19 @@ class Today extends StatefulWidget {
 }
 
 class _TodayState extends State<Today> {
-  List items = [
-    "one",
-    "two",
-    "three",
-    "for",
-    "five",
-    "six",
-    "osebebe",
-    "eighto",
-    "one",
-    "two",
-    "one",
-    "two"
-  ];
-  bool showButtons = false;
-
   @override
   void initState() {
     super.initState();
     initiliaze();
   }
 
+
   List<String>? tasks;
 
   initiliaze() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     tasks = prefs.getStringList("tasks");
-    print(tasks);
+
   }
   late ScaffoldMessengerState scaffoldMessenger;
 
@@ -47,9 +32,6 @@ class _TodayState extends State<Today> {
     super.didChangeDependencies();
     scaffoldMessenger = ScaffoldMessenger.of(context);
   }
-
-
-
   String text = "";
 
   @override
@@ -84,82 +66,91 @@ class _TodayState extends State<Today> {
                         String task = tasks[index];
                         List<String> parts = task.split(", ");
                         String title = parts[0].substring("Title: ".length);
-                        String projectName = parts[1].substring("Project Name: ".length);
                         String description = parts[2].substring("Description: ".length);
                         String date = parts[3].substring("Date: ".length);
                         DateTime dateTime = DateTime.parse(date);
                         String formattedDate = DateFormat('yyyy-MM-dd').format(dateTime);
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                          child: Slidable(
-                            key: ValueKey(index),
-                            endActionPane: ActionPane(
-                              motion: const StretchMotion(),
-                              dismissible: DismissiblePane(
-                                onDismissed: () async {
-                                  setState(() {
-                                    tasks.removeAt(index);
-                                  });
-                                  final SharedPreferences prefs = await SharedPreferences.getInstance();
-                                  await prefs.setStringList('tasks', tasks);
-                                  setState(() {});
+                        String monthselected =
+                        parts[7].substring("monthselected: ".length);
+                        if (monthselected == 'false'){
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                            child: Slidable(
+                              key: ValueKey(index),
+                              endActionPane: ActionPane(
+                                motion: const StretchMotion(),
+                                dismissible: DismissiblePane(
+                                  onDismissed: () async {
+                                    setState(() {
+                                      tasks.removeAt(index);
+                                    });
+                                    final SharedPreferences prefs = await SharedPreferences.getInstance();
+                                    await prefs.setStringList('tasks', tasks);
+                                    setState(() {});
 
-                                  scaffoldMessenger.showSnackBar(const SnackBar(
-                                    content: Text('Successfully deleted task'),
-                                    duration: Duration(seconds: 1),
-                                  ));
-                                },
+                                    scaffoldMessenger.showSnackBar(const SnackBar(
+                                      content: Text('Successfully deleted task'),
+                                      duration: Duration(seconds: 1),
+                                    ));
+                                  },
 
+                                ),
+                                children: const [],
                               ),
-                              children: [],
-                            ),
 
-                            child: Container(
-                              height: 50,
-                              width: double.infinity,
-                              decoration: const BoxDecoration(
-                                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                                  color: Colors.white,
-                                  boxShadow: [
-                                    BoxShadow(color: Colors.grey, blurRadius: 3.5),
-                                  ]
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 15),
-                                child: Row(
-                                  children: [
-                                    const SizedBox(width: 20),
-                                     Expanded(
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          SizedBox(
-                                            width: double.infinity,
-                                            child: Text(
-                                              title ?? "",
-                                              style: TextStyle(),
+                              child: Container(
+                                height: 50,
+                                width: double.infinity,
+                                decoration: const BoxDecoration(
+                                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                                    color: Colors.white,
+                                    boxShadow: [
+                                      BoxShadow(color: Colors.grey, blurRadius: 3.5),
+                                    ]
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                                  child: Row(
+                                    children: [
+                                      const SizedBox(width: 20),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            SizedBox(
+                                              width: double.infinity,
+                                              child: Text(
+                                                title ?? "",
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                            Text(
+                                              description ?? "",
+                                              style: const TextStyle(color: Colors.grey, fontSize: 12),
                                               overflow: TextOverflow.ellipsis,
                                             ),
-                                          ),
-                                          Text(
-                                            description ?? "",
-                                            style: TextStyle(color: Colors.grey, fontSize: 12),
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                    Text(
-                                      formattedDate,
-                                      style: const TextStyle(fontSize: 12),
-                                    ),
-                                  ],
+                                      Text(
+                                        formattedDate,
+                                        style: const TextStyle(fontSize: 12),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        );
+                          );
+
+
+
+                        }
+                        else{
+                          return const Center(child: Text("No Tasks for today"),);
+                        }
+
                       },
                     );
                   } else {
@@ -170,85 +161,6 @@ class _TodayState extends State<Today> {
             );
           }
         ),
-
-        // Expanded(
-        //   child: ListView.builder(
-        //     itemCount: items.length,
-        //     itemBuilder: (BuildContext context, int index) {
-        //       return Padding(
-        //         padding:
-        //             const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-        //         child: Slidable(
-        //           key: ValueKey(index),
-        //           endActionPane: ActionPane(
-        //             motion: const StretchMotion(),
-        //             dismissible: DismissiblePane(
-        //               onDismissed: () {
-        //                 setState(() {
-        //                   items.removeAt(index);
-        //                 });
-        //               },
-        //             ),
-        //             children: [
-        //             ],
-        //           ),
-        //           child: Container(
-        //             height: 50,
-        //             width: double.infinity,
-        //             decoration: const BoxDecoration(
-        //                 borderRadius: BorderRadius.all(Radius.circular(10)),
-        //                 color: Colors.white,
-        //                 boxShadow: [
-        //                   BoxShadow(color: Colors.grey, blurRadius: 3.5),
-        //                 ]),
-        //             child: Row(
-        //               children: [
-        //                 Checkbox(
-        //                   value: showButtons,
-        //                   onChanged: (newValue) {
-        //                     setState(() {
-        //                       showButtons = !showButtons;
-        //                     });
-        //                   },
-        //                   shape: RoundedRectangleBorder(
-        //                     borderRadius: BorderRadius.circular(100),
-        //                   ),
-        //                   checkColor: Colors.blue,
-        //                 ),
-        //                 const SizedBox(
-        //                   width: 10,
-        //                 ),
-        //                 const Column(
-        //                   crossAxisAlignment: CrossAxisAlignment.start,
-        //                   mainAxisAlignment: MainAxisAlignment.center,
-        //                   children: [
-        //                     Row(
-        //                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        //                       children: [
-        //                         Text(
-        //                           "title",
-        //                           style: TextStyle(),
-        //                         ),Text(
-        //                           "date",
-        //                           style: TextStyle(),
-        //                         ),
-        //                       ],
-        //                     ),
-        //                     Text(
-        //                       "description",
-        //                       style: TextStyle(color: Colors.grey, fontSize: 12),
-        //                     ),
-        //                   ],
-        //                 ),
-        //               ],
-        //             ),
-        //           ),
-        //         ),
-        //
-        //       );
-        //     },
-        //   ),
-        // ),
       ],
     );
   }

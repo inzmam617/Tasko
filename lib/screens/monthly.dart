@@ -11,56 +11,54 @@ class MonthTab extends StatefulWidget {
 }
 
 class _MonthTabState extends State<MonthTab> {
-  Map<DateTime, List<CleanCalendarEvent>> _events = {};
+  final Map<DateTime, List<CleanCalendarEvent>> _events = {};
 
-   List<String> notes = [];
+  List<String> notes = [];
   int year = 0;
   int month = 0;
   int day = 0;
+  int hour = 0;
+  int minute = 0;
 
-  initiliaze() async {
+  initialize() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     notes = prefs.getStringList("tasks")!;
     for (String task in notes) {
       List<String> parts = task.split(", ");
-      String dueDate = parts[6].substring("DueDate: ".length);
-      String dueTime = parts[7].substring("DueTime: ".length);
+      String dueDate = parts[5].substring("DueDate: ".length);
+      String dueTime = parts[6].substring("DueTime: ".length).replaceAll(RegExp('[AP]M'), '');
 
-      // Remove colons and spaces from dueTime
-      dueTime = dueTime.replaceAll(':', '').replaceAll(' ', '');
-
-      // Extract date components
       List<String> dateComponents = dueDate.split('-');
+      List<String> timeComponents = dueTime.split(':');
+
       int year = int.parse(dateComponents[0]);
       int month = int.parse(dateComponents[1]);
       int day = int.parse(dateComponents[2]);
+      int hour = int.parse(timeComponents[0]);
+      int minute = int.parse(timeComponents[1]);
 
-      // Extract time components
-      int hour = int.parse(dueTime.substring(0, 2));
-      int minute = int.parse(dueTime.substring(2, 4));
+      DateTime eventDateTime = DateTime(year, month, day);
 
-      DateTime dateTime = DateTime(year, month, day, hour, minute);
-
-      final event = CleanCalendarEvent(
-        parts[0].substring("Title: ".length),
-        startTime: dateTime,
-        color: Colors.red,
-        endTime: dateTime,
-      );
-
-      // Add the event to the _events map
-      if (_events.containsKey(dateTime)) {
-        _events[dateTime]!.add(event);
+      if (_events.containsKey(eventDateTime)) {
+        _events[eventDateTime]!.add(
+          CleanCalendarEvent(
+            'Event C',
+            startTime: DateTime(year, month, day, hour, minute),
+            color: Colors.white,
+            endTime: DateTime(year, month, day, hour, minute),
+          ),
+        );
       } else {
-        _events[dateTime] = [event];
+        _events[eventDateTime] = [
+          CleanCalendarEvent(
+            'Event C',
+            startTime: DateTime(year, month, day, hour, minute),
+            color: Colors.white,
+            endTime: DateTime(year, month, day, hour, minute),
+          ),
+        ];
       }
     }
-
-    print(_events);
-
-
-
-
   }
 
 
@@ -68,13 +66,9 @@ class _MonthTabState extends State<MonthTab> {
   @override
   void initState() {
     super.initState();
-    initiliaze();
-
-
-
+    initialize();
   }
 
-  DateTime _currentMonth = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
@@ -84,40 +78,38 @@ class _MonthTabState extends State<MonthTab> {
           const SizedBox(
             height: 10,
           ),
+
           Flexible(
-            child: Calendar(
-              onMonthChanged: (month) {
-                setState(() {
-                  _currentMonth = month;
-                });
-              },
-              hideTodayIcon: true,
-              isExpanded: true,
-              hideBottomBar: true,
-              startOnMonday: true,
-              weekDays: const [
-                'Mon',
-                'Tue',
-                'Wed',
-                'Thur',
-                'Fri',
-                'Sat',
-                'Sun'
-              ],
-              events: _events,
-              onRangeSelected: (range) =>
-                  print('Range is ${range.from}, ${range.to}'),
-              todayColor: Colors.blue,
-              eventColor: Colors.red,
-              locale: 'en_US',
-              expandableDateFormat: 'EEEE, dd. MMMM yyyy',
-              dayOfWeekStyle: const TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.w800,
-                  fontSize: 11),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Calendar(
+                hideTodayIcon: true,
+                isExpanded: true,
+                hideBottomBar: true,
+                startOnMonday: true,
+                weekDays: const [
+                  'Mon',
+                  'Tue',
+                  'Wed',
+                  'Thur',
+                  'Fri',
+                  'Sat',
+                  'Sun'
+                ],
+                events: _events,
+                eventColor: Colors.red,
+                locale: 'en_US',
+                expandableDateFormat: 'EEEE, dd. MMMM yyyy',
+                dayOfWeekStyle: const TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w800,
+                    fontSize: 11),
+              ),
             ),
           ),
-
+          const SizedBox(
+            height: 10,
+          ),
           const Center(
             child: Text(
               "Events",
@@ -144,7 +136,6 @@ class _MonthTabState extends State<MonthTab> {
                       itemBuilder: (BuildContext context, int index) {
                         String task = tasks[index];
                         List<String> parts = task.split(", ");
-
                         if (parts.length >= 8) {
                           String title = parts[0].substring("Title: ".length);
                           String projectName =
@@ -239,12 +230,6 @@ class _MonthTabState extends State<MonthTab> {
                               ),
                             );
                           }
-                          ;
-
-                          // Rest of your code for returning the Widget
-
-                          // Handle cases where parts.length < 8 or monthselected != 'true'
-                          // You can choose to return an empty Container or null, or provide an alternative widget as needed.
                           return Container();
                         }
                       });
@@ -254,73 +239,6 @@ class _MonthTabState extends State<MonthTab> {
               },
             ),
           ),
-          // Expanded(
-          //   child: ListView.builder(
-          //     itemCount:_events.length,
-          //     physics: const ScrollPhysics(),
-          //     itemBuilder: (BuildContext context, int index) {
-          //       return Padding(
-          //         padding: const EdgeInsets.symmetric(vertical: 10,horizontal: 20),
-          //         child: Container(
-          //           height: 50,
-          //           width: double.infinity,
-          //           decoration: const BoxDecoration(
-          //               borderRadius: BorderRadius.all(Radius.circular(10)),
-          //               color: Colors.white,
-          //               boxShadow: [
-          //                 BoxShadow(color: Colors.grey, blurRadius: 3.5),
-          //               ]),
-          //           child: const Padding(
-          //             padding: EdgeInsets.symmetric(horizontal: 15),
-          //             child: Row(
-          //               children: [
-          //                 // Checkbox(
-          //                 //   value: showButtons,
-          //                 //   onChanged: (newValue) {
-          //                 //     setState(() {
-          //                 //       showButtons = !showButtons;
-          //                 //     });
-          //                 //   },
-          //                 //   shape: RoundedRectangleBorder(
-          //                 //     borderRadius: BorderRadius.circular(100),
-          //                 //   ),
-          //                 //   checkColor: Colors.blue,
-          //                 // ),
-          //                 SizedBox(width: 20),
-          //                 Expanded(
-          //                   child: Column(
-          //                     crossAxisAlignment: CrossAxisAlignment.start,
-          //                     mainAxisAlignment: MainAxisAlignment.center,
-          //                     children: [
-          //                       SizedBox(
-          //                         width: double.infinity,
-          //                         child: Text(
-          //                           "Event Name",
-          //                           style: TextStyle(),
-          //                           overflow: TextOverflow.ellipsis,
-          //                         ),
-          //                       ),
-          //                       Text(
-          //                         "description" ?? "",
-          //                         style:
-          //                             TextStyle(color: Colors.grey, fontSize: 12),
-          //                         overflow: TextOverflow.ellipsis,
-          //                       ),
-          //                     ],
-          //                   ),
-          //                 ),
-          //                 Text(
-          //                   "event date",
-          //                   style: TextStyle(fontSize: 12),
-          //                 ),
-          //               ],
-          //             ),
-          //           ),
-          //         ),
-          //       );
-          //     },
-          //   ),
-          // )
         ],
       ),
     );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'BottomPage/BottomBarPage.dart';
 import 'StartingScreens/splash.dart';
  main()  {
 
@@ -14,7 +15,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return const SplashScreen();
+    return const BottomBarPage();
 
   }
 }

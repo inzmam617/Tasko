@@ -13,48 +13,12 @@ class Menu extends StatefulWidget {
 }
 
 class _MenuState extends State<Menu> {
-
-  Future<bool> containsDuplicateProject(String projectName) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String>? tasks = prefs.getStringList('projects');
-
-    if (tasks == null) {
-      return false; // Handle the case when projects are not available
-    }
-
-    Map<String, int> projectCounts = {};
-
-    if (tasks.isNotEmpty) {
-      // Count the occurrences of each project in the list
-      for (String project in tasks) {
-        if (projectCounts.containsKey(project)) {
-          projectCounts[project] = projectCounts[project]! + 1;
-        } else {
-          projectCounts[project] = 1;
-        }
-      }
-    }
-
-    // Check if the specified project occurs more than once
-    return projectCounts.containsKey(projectName) && projectCounts[projectName]! > 1;
-  }
-
-  List listofprojects=[
-    "Personal",
-    "Teamworks",
-    "Home",
-    "Meet",
-    "Gym",
-    "Lhapre"
-  ];
-  List nooftasks=[10,20,30,40,60, 20];
-  int sameprojectcount=0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body:
-      Padding(padding: EdgeInsets.symmetric(horizontal: 16),
+      Padding(padding: const EdgeInsets.symmetric(horizontal: 16),
       child:
       Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -98,21 +62,16 @@ class _MenuState extends State<Menu> {
                     itemBuilder: (BuildContext context, int index) {
                       String task = filteredTasks[index]; // Use fil
 
-
-                      // Split task string into parts
                       List<String> parts = task.split(", ");
 
 
                       if (parts.length >= 2) {
-                        // Extract project name and color
                         String projectName = parts[1].substring("Project Name: ".length);
                         String projectColor = parts[4].substring("ProjectColor: ".length);
-
-
                         return Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Container(
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                               color: Colors.white,
                               boxShadow: [
                                 BoxShadow(
@@ -122,7 +81,7 @@ class _MenuState extends State<Menu> {
                               ],
                             ),
                             child: Padding(
-                              padding: EdgeInsets.only(left: 24, top: 24),
+                              padding: const EdgeInsets.only(left: 24, top: 24),
                               child: Align(
                                 alignment: Alignment.centerLeft,
                                 child: Column(
@@ -153,7 +112,6 @@ class _MenuState extends State<Menu> {
                           ),
                         );
                       } else {
-                        // Handle case when task string doesn't have enough parts
                         return Container(); // or any other fallback widget
                       }
                     },
@@ -164,21 +122,8 @@ class _MenuState extends State<Menu> {
               }
             },
           ),
-
-
-
-
         ],
       ),
     ));
-  }
-  Color _generateRandomColor() {
-    final random = Random();
-    return Color.fromRGBO(
-      random.nextInt(255),
-      random.nextInt(255),
-      random.nextInt(255),
-      1,
-    );
   }
 }
