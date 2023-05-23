@@ -13,7 +13,8 @@ class AddNewTask extends StatefulWidget {
   State<AddNewTask> createState() => _AddNewTaskState();
 }
 
-List<String> list = [ "Today" , "Monthly"];
+  List<String> list = [ "Today" , "Monthly"];
+  bool monthselected=false;
 
 class _AddNewTaskState extends State<AddNewTask> {
   String getRandomMaterialColor() {
@@ -34,17 +35,32 @@ class _AddNewTaskState extends State<AddNewTask> {
     print(colorString);
   }
 
+
+
+
   addtasks() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String> tasks = prefs.getStringList("tasks") ?? [];
-    String task = "Title: ${title.text}, Project Name: ${projectName.text}, Description: ${description.text}, Date: ${DateTime.now()}, ProjectColor: $colorString , DueDate : ${_selectedDate.toString().substring(0,10)} , DueTime : ${DateFormat.jm().format(DateTime(
-      DateTime.now().year,
-      DateTime.now().month,
-      DateTime.now().day,
-      _selectedTime.hour,
-      _selectedTime.minute,
-    ))}";
+    // if(tasks[1] == projectName.text){
+    String task = "Title: ${title.text}, Project Name: ${projectName.text}, Description: ${description.text}, Date: ${DateTime.now()}, ProjectColor: $colorString, DueDate: ${_selectedDate != null ? _selectedDate.toString().substring(0, 10) : ''}, DueTime: ${_selectedTime != null ? DateFormat.jm().format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, _selectedTime.hour, _selectedTime.minute)) : ''}, monthselected: ${monthselected.toString()}";
+    // // String tasko = tasks[index];
+    // for(var i in tasks){
+    //   tasks.add(task);
+    //    print(tasks[1].toString());
+    // }
+    //
+    // // Count occurrences of project names
+    //
+    // List<String> parts = task.split(", ");
+    //
+    // String projec0tName = parts[1].substring("Project Name: ".length);
+    // // }else{
+    // //   print("Project does not exitst");
+    // // }
+
+    //
     tasks.add(task);
+    // tasks.contains(task.contains(projectName.text));
     prefs.setStringList("tasks", tasks);
     // ignore: use_build_context_synchronously
     Navigator.of(context)
@@ -58,6 +74,35 @@ class _AddNewTaskState extends State<AddNewTask> {
     ));
     print(task);
   }
+
+
+  Future<bool> containsDuplicateProject(String projectName) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String>? tasks = prefs.getStringList('projects');
+
+    if (tasks == null) {
+      return false; // Handle the case when projects are not available
+    }
+
+    Map<String, int> projectCounts = {};
+
+    if (tasks.isNotEmpty) {
+      // Count the occurrences of each project in the list
+      for (String project in tasks) {
+        if (projectCounts.containsKey(project)) {
+          projectCounts[project] = projectCounts[project]! + 1;
+        } else {
+          projectCounts[project] = 1;
+        }
+      }
+    }
+
+    // Check if the specified project occurs more than once
+    return projectCounts.containsKey(projectName) && projectCounts[projectName]! > 1;
+  }
+
+
+
 
   String? validateEmpty(String? value) {
     if (value == null || value.isEmpty) {
@@ -158,6 +203,7 @@ class _AddNewTaskState extends State<AddNewTask> {
                     dropdownValue = value!;
                     if(value == "Monthly"){
                       setState(() {
+                        monthselected=true;
                         visible = true;
                       });
 

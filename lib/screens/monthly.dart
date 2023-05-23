@@ -11,43 +11,86 @@ class MonthTab extends StatefulWidget {
 }
 
 class _MonthTabState extends State<MonthTab> {
+  Map<DateTime, List<CleanCalendarEvent>> _events = {};
 
-   Map<DateTime, List<CleanCalendarEvent>> _events = { };
+   List<String> notes = [];
+  int year = 0;
+  int month = 0;
+  int day = 0;
+
+  initiliaze() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    notes = prefs.getStringList("tasks")!;
+    for (String task in notes) {
+      List<String> parts = task.split(", ");
+      String dueDate = parts[6].substring("DueDate: ".length);
+      String dueTime = parts[7].substring("DueTime: ".length);
+
+      // Remove colons and spaces from dueTime
+      dueTime = dueTime.replaceAll(':', '').replaceAll(' ', '');
+
+      // Extract date components
+      List<String> dateComponents = dueDate.split('-');
+      int year = int.parse(dateComponents[0]);
+      int month = int.parse(dateComponents[1]);
+      int day = int.parse(dateComponents[2]);
+
+      // Extract time components
+      int hour = int.parse(dueTime.substring(0, 2));
+      int minute = int.parse(dueTime.substring(2, 4));
+
+      DateTime dateTime = DateTime(year, month, day, hour, minute);
+
+      final event = CleanCalendarEvent(
+        parts[0].substring("Title: ".length),
+        startTime: dateTime,
+        color: Colors.red,
+        endTime: dateTime,
+      );
+
+      // Add the event to the _events map
+      if (_events.containsKey(dateTime)) {
+        _events[dateTime]!.add(event);
+      } else {
+        _events[dateTime] = [event];
+      }
+    }
+
+    print(_events);
+
+
+
+
+  }
+
+
 
   @override
   void initState() {
     super.initState();
-    _events = {
-      DateTime(2023, 5, 2): [
-        // CleanCalendarEvent(
-        //   'Event C',
-        //   startTime: DateTime(
-        //     2023,
-        //     5,
-        //     3,
-        //   ),
-        //   color: Colors.white,
-        //   endTime: DateTime(2023, 5, 3, 10, 0),
-        // ),
-        CleanCalendarEvent(
-          'Event C',
-          startTime: DateTime(2023, 5, 3, 9, 0),
-          color: Colors.white,
-          endTime: DateTime(2023, 5, 3, 10, 0),
-        ),
-      ],
-    };
+    initiliaze();
+
+
+
   }
+
+  DateTime _currentMonth = DateTime.now();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         children: [
-          SizedBox(
+          const SizedBox(
             height: 10,
           ),
           Flexible(
             child: Calendar(
+              onMonthChanged: (month) {
+                setState(() {
+                  _currentMonth = month;
+                });
+              },
               hideTodayIcon: true,
               isExpanded: true,
               hideBottomBar: true,
@@ -74,112 +117,143 @@ class _MonthTabState extends State<MonthTab> {
                   fontSize: 11),
             ),
           ),
+
           const Center(
-            child: Text("Events",style: TextStyle(color: Colors.grey,fontSize: 18),),
+            child: Text(
+              "Events",
+              style: TextStyle(color: Colors.grey, fontSize: 18),
+            ),
           ),
-          const SizedBox(height: 8,),
+          const SizedBox(
+            height: 8,
+          ),
 
-      Expanded(
-        child: FutureBuilder(
-          future: SharedPreferences.getInstance(),
-          builder: (BuildContext context, AsyncSnapshot<SharedPreferences> snapshot) {
-            List<String> tasks = snapshot.data?.getStringList('tasks') ?? [];
-            print(tasks);
-            if(tasks.isEmpty){
-              return const Center(child: Text("No Tasks Yet!!"));
-            }
-            if (snapshot.hasData) {
-              return ListView.builder(
-                itemCount: tasks.length,
-                itemBuilder: (BuildContext context, int index) {
-                  String task = tasks[index];
-                  List<String> parts = task.split(", ");
-                  String title = parts[0].substring("Title: ".length);
-                  String projectName = parts[1].substring("Project Name: ".length);
-                  String description = parts[2].substring("Description: ".length);
-                  // String date = parts[3].substring("Date: ".length);
-                  String DueDate = parts[5].substring("DueDate: ".length);
-                  String DueTime = parts[6].substring("DueTime: ".length);
+          Expanded(
+            child: FutureBuilder(
+              future: SharedPreferences.getInstance(),
+              builder: (BuildContext context,
+                  AsyncSnapshot<SharedPreferences> snapshot) {
+                List<String> tasks =
+                    snapshot.data?.getStringList('tasks') ?? [];
+                if (tasks.isEmpty) {
+                  return const Center(child: Text("No Tasks Yet!!"));
+                }
+                if (snapshot.hasData) {
+                  return ListView.builder(
+                      itemCount: tasks.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        String task = tasks[index];
+                        List<String> parts = task.split(", ");
 
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10,horizontal: 20),
-                    child: InkWell(
-                      onTap: (){
+                        if (parts.length >= 8) {
+                          String title = parts[0].substring("Title: ".length);
+                          String projectName =
+                              parts[1].substring("Project Name: ".length);
+                          String description =
+                              parts[2].substring("Description: ".length);
+                          String date = parts[3].substring("Date: ".length);
+                          String DueDate =
+                              parts[5].substring("DueDate: ".length);
+                          String DueTime =
+                              parts[6].substring("DueTime: ".length);
+                          String monthselected =
+                              parts[7].substring("monthselected: ".length);
 
-                      },
-                      child: Container(
-
-                        width: double.infinity,
-                        decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                            color: Colors.white,
-                            boxShadow: [
-                              BoxShadow(color: Colors.grey, blurRadius: 3.5),
-                            ]),
-                        child:  Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 15,vertical: 10),
-                          child: Row(
-                            children: [
-                              // Checkbox(
-                              //   value: showButtons,
-                              //   onChanged: (newValue) {
-                              //     setState(() {
-                              //       showButtons = !showButtons;
-                              //     });
-                              //   },
-                              //   shape: RoundedRectangleBorder(
-                              //     borderRadius: BorderRadius.circular(100),
-                              //   ),
-                              //   checkColor: Colors.blue,
-                              // ),
-                              SizedBox(width: 20),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    SizedBox(
-                                      width: double.infinity,
-                                      child: Text(
-                                        title,
-                                        style: TextStyle(),
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
+                          if (monthselected == 'true') {
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 20),
+                              child: InkWell(
+                                onTap: () {},
+                                child: Container(
+                                  width: double.infinity,
+                                  decoration: const BoxDecoration(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(10)),
+                                      color: Colors.white,
+                                      boxShadow: [
+                                        BoxShadow(
+                                            color: Colors.grey,
+                                            blurRadius: 3.5),
+                                      ]),
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 15, vertical: 10),
+                                    child: Row(
+                                      children: [
+                                        // Checkbox(
+                                        //   value: showButtons,
+                                        //   onChanged: (newValue) {
+                                        //     setState(() {
+                                        //       showButtons = !showButtons;
+                                        //     });
+                                        //   },
+                                        //   shape: RoundedRectangleBorder(
+                                        //     borderRadius: BorderRadius.circular(100),
+                                        //   ),
+                                        //   checkColor: Colors.blue,
+                                        // ),
+                                        SizedBox(width: 20),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              SizedBox(
+                                                width: double.infinity,
+                                                child: Text(
+                                                  title,
+                                                  style: TextStyle(),
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                              ),
+                                              Text(
+                                                description,
+                                                style: TextStyle(
+                                                    color: Colors.grey,
+                                                    fontSize: 12),
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Column(
+                                          children: [
+                                            Text(
+                                              DueDate,
+                                              style: TextStyle(fontSize: 12),
+                                            ),
+                                            Text(
+                                              DueTime,
+                                              style: TextStyle(fontSize: 12),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
                                     ),
-                                    Text(
-                                    description,
-                                      style:
-                                      TextStyle(color: Colors.grey, fontSize: 12),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ],
+                                  ),
                                 ),
                               ),
-                              Column(
-                                children: [
-                                  Text(
-                                    DueDate,
-                                    style: TextStyle(fontSize: 12),
-                                  ),Text(
-                                    DueTime,
-                                    style: TextStyle(fontSize: 12),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              );
-            } else {
-              return const Center(child: CircularProgressIndicator());
-            }
-          },
-        ),
-      ),
+                            );
+                          }
+                          ;
+
+                          // Rest of your code for returning the Widget
+
+                          // Handle cases where parts.length < 8 or monthselected != 'true'
+                          // You can choose to return an empty Container or null, or provide an alternative widget as needed.
+                          return Container();
+                        }
+                      });
+                } else {
+                  return const Center(child: CircularProgressIndicator());
+                }
+              },
+            ),
+          ),
           // Expanded(
           //   child: ListView.builder(
           //     itemCount:_events.length,

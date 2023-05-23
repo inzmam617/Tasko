@@ -5,6 +5,7 @@ import 'package:tasko/screens/Menu.dart';
 import 'package:tasko/screens/home.dart';
 import '../screens/AddNotes.dart';
 import '../screens/AddnewTasks.dart';
+import '../screens/Quick.dart';
 import '../screens/monthly.dart';
 
 class BottomBarPage extends StatefulWidget {
@@ -19,7 +20,7 @@ class _BottomBarPageState extends State<BottomBarPage> {
   static const List<Widget> _widgetOptions = <Widget>[
     Home(),
     Menu(),
-    Home(),
+    Quick(),
     MonthTab()
   ];
 

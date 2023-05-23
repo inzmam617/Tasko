@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-
-import 'Quick.dart';
 import 'Today.dart';
 import 'monthly.dart';
 
@@ -31,6 +29,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
         centerTitle: true,
         title: const Text('Tasko Karo'),
         bottom: TabBar(
+
           indicatorColor: Colors.white,
           controller: _tabController,
           tabs: const <Widget>[
