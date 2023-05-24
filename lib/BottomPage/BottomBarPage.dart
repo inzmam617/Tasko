@@ -1,12 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:tasko/screens/Menu.dart';
 import 'package:tasko/screens/home.dart';
 import '../screens/AddNotes.dart';
 import '../screens/AddnewTasks.dart';
-import '../screens/Quick.dart';
-import '../screens/monthly.dart';
+import '../screens/tabBarforprojectsAndNotes.dart';
 
 class BottomBarPage extends StatefulWidget {
   const BottomBarPage({Key? key}) : super(key: key);
@@ -19,9 +15,8 @@ class _BottomBarPageState extends State<BottomBarPage> {
   int _selectedIndex = 0;
   static const List<Widget> _widgetOptions = <Widget>[
     Home(),
-    Menu(),
-    Quick(),
-    MonthTab()
+    TabBarPage(),
+
   ];
 
   void _onItemTapped(int index) {
@@ -39,74 +34,7 @@ class _BottomBarPageState extends State<BottomBarPage> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: const Color(0xFFfe7f75),
         onPressed: () {
-            // showModalBottomSheet(
-            //   backgroundColor: Color(0xff1e1e1e),
-            //   shape: RoundedRectangleBorder(
-            //     borderRadius: BorderRadius.vertical(
-            //       top: Radius.circular(20.0),
-            //     ),
-            //   ),
-            //   context: context,
-            //   isScrollControlled: true,
-            //   builder: (BuildContext context) {
-            //     return SingleChildScrollView(
-            //       padding: EdgeInsets.only(
-            //         bottom: MediaQuery.of(context).viewInsets.bottom,
-            //       ),
-            //       child: Column(
-            //         children: [
-            //           Center(
-            //             child: Padding(
-            //               padding: const EdgeInsets.symmetric(horizontal: 10),
-            //               child: TextField(
-            //                 textAlign: TextAlign.center,
-            //                 style: TextStyle(color: Colors.white70),
-            //                 inputFormatters: [
-            //                   LengthLimitingTextInputFormatter(15),
-            //                 ],
-            //                 cursorColor: CupertinoColors.activeOrange,
-            //                 autofocus: true,
-            //                 keyboardType: TextInputType.text,
-            //                 decoration: InputDecoration(
-            //
-            //                   hintStyle: TextStyle(color: Colors.grey),
-            //                   hintText: 'Enter text here',
-            //                   border: InputBorder.none,
-            //                 ),
-            //                 onSubmitted: (value) {
-            //                   // Handle text input here
-            //                   Navigator.pop(context);
-            //                 },
-            //               ),
-            //             ),
-            //           ),
-            //           Padding(
-            //             padding: const EdgeInsets.symmetric(horizontal: 10),
-            //             child: TextField(
-            //
-            //               style: TextStyle(color: Colors.white70),
-            //
-            //               cursorColor: CupertinoColors.activeOrange,
-            //               autofocus: true,
-            //               // keyboardType: TextInputType.url,
-            //               decoration: InputDecoration(
-            //
-            //                 hintStyle: TextStyle(color: Colors.grey,fontSize: 13),
-            //                 hintText: 'Description',
-            //                 border: InputBorder.none,
-            //               ),
-            //               onSubmitted: (value) {
-            //                 // Handle text input here
-            //                 Navigator.pop(context);
-            //               },
-            //             ),
-            //           ),
-            //
-            //         ],
-            //       ),
-            //     );
-            //   },
-            // );
+
             showDialog(
             context: context,
             builder: (BuildContext context) {
@@ -124,12 +52,12 @@ class _BottomBarPageState extends State<BottomBarPage> {
                           Navigator.of(context).pop();
 
                           Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) {
-                            return AddNewTask();
+                            return const AddNewTask();
                           }));
 
 
                         },
-                        child: Text("Add Task",style: TextStyle(color: Colors.black),),
+                        child: const Text("Add Task",style: TextStyle(color: Colors.black),),
                       ),
                       const Divider(),
                       TextButton(
@@ -158,54 +86,35 @@ class _BottomBarPageState extends State<BottomBarPage> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Color(0xff292E4E),
-        items: <BottomNavigationBarItem>[
+        backgroundColor: const Color(0xff292E4E),
+        items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-
-
-            backgroundColor: const Color(0xff2a2e4d),
-
+            backgroundColor:  Color(0xff2a2e4d),
             icon: Icon(Icons.task_alt_rounded,size: 30,
             ),
             label: '',
-            // backgroundColor: Colors.green
           ),
           BottomNavigationBarItem(
-            backgroundColor: const Color(0xff2a2e4d),
-
-            icon: Padding(
-              padding: const EdgeInsets.only(right: 50),
-              child: Icon(Icons.menu,size: 30,
-              ),
+            backgroundColor:  Color(0xff2a2e4d),
+            icon: Icon(Icons.menu,size: 30,
             ),
-            label: '',            // backgroundColor: Color(0xff2a2e4d),
-
+            label: '',
           ),
-
-          BottomNavigationBarItem(
-            backgroundColor: const Color(0xff2a2e4d),
-
-            icon: Padding(
-              padding: const EdgeInsets.only(left: 50),
-              child: Icon(Icons.table_view_sharp,size: 28,),
-            ),
-            label: '',            // backgroundColor: Color(0xff2a2e4d),
-
-          ),
-          BottomNavigationBarItem(
-            backgroundColor: const Color(0xff2a2e4d),
-
-            icon: Icon(Icons.person,size: 28,),
-            label: ""
-          )
+          // BottomNavigationBarItem(
+          //   backgroundColor:  Color(0xff2a2e4d),
+          //
+          //   icon: Padding(
+          //     padding:  EdgeInsets.only(left: 50),
+          //     child: Icon(Icons.table_view_sharp,size: 28,),
+          //   ),
+          //   label: '',            // backgroundColor: Color(0xff2a2e4d),
+          // ),
         ],
         type: BottomNavigationBarType.fixed,
         currentIndex: _selectedIndex,
-
         selectedItemColor: Colors.white,
         unselectedItemColor: Colors.grey,
         selectedIconTheme: const IconThemeData(color: Colors.white),
-
         onTap: _onItemTapped,
 
       ),

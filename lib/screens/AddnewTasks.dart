@@ -14,7 +14,7 @@ class AddNewTask extends StatefulWidget {
 }
 
   List<String> list = [ "Today" , "Monthly"];
-  bool monthselected=false;
+  bool monthselected = false;
 
 class _AddNewTaskState extends State<AddNewTask> {
   String getRandomMaterialColor() {
@@ -201,6 +201,7 @@ class _AddNewTaskState extends State<AddNewTask> {
                   // This is called when the user selects an item.
                   setState(() {
                     dropdownValue = value!;
+
                     if(value == "Monthly"){
                       setState(() {
                         monthselected=true;
@@ -208,9 +209,18 @@ class _AddNewTaskState extends State<AddNewTask> {
                       });
 
                           }
-                      else{
-                        visible = false;
-                    }
+                      else if(value == "Today"){
+
+                        setState(() {
+
+                          monthselected=false;
+
+                          visible = false;
+                        });
+
+                    } print(monthselected.toString());
+                    print(value);
+
                   });
                 },
                 items: list.map<DropdownMenuItem<String>>((String value) {

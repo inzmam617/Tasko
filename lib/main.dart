@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'BottomPage/BottomBarPage.dart';
-import 'StartingScreens/splash.dart';
  main()  {
 
   runApp(const MaterialApp(

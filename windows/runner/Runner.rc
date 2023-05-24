@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "tasko" "\0"
+            VALUE "FileDescription", "Tasko" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "tasko" "\0"
+            VALUE "InternalName", "Tasko" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2023 com.example. All rights reserved." "\0"
             VALUE "OriginalFilename", "tasko.exe" "\0"
-            VALUE "ProductName", "tasko" "\0"
+            VALUE "ProductName", "Tasko" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

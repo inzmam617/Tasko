@@ -24,20 +24,23 @@ class _AddNotesState extends State<AddNotes> {
   }
   //
   addNotes() async {
+    // print(selectedColor.toString().substring(35 , 45));
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
     // Get existing tasks list from SharedPreferences
     List<String> notes = prefs.getStringList("notes") ?? [];
 
     // Add new task to the list
-    String note = "Description: ${desc.text}, Color: ${selectedColor.toString()}";
+    String note = "Description: ${desc.text}, Color: ${selectedColor.toString().substring(35 , 45)}";
     notes.add(note);
 
     // Save updated list to SharedPreferences
     prefs.setStringList("notes", notes);
+    // ignore: use_build_context_synchronously
     Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) {
-      return BottomBarPage();
+      return const BottomBarPage();
     }));
+    // ignore: use_build_context_synchronously
     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
       content: Text('Successfully add Note'),
       duration: Duration(seconds: 1),
@@ -99,7 +102,7 @@ class _AddNotesState extends State<AddNotes> {
                   ),
                 ),
               ),
-              SizedBox(height: 50,),
+              const SizedBox(height: 50,),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -111,7 +114,7 @@ class _AddNotesState extends State<AddNotes> {
                       });
                     },
                     child: Container(
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(10)),
                         boxShadow: [
                           BoxShadow(
@@ -123,10 +126,10 @@ class _AddNotesState extends State<AddNotes> {
                       ),
                       width: 40,
                       height: 40,
-                      child: selectedColor == Colors.red ? Icon(Icons.check) : null,
+                      child: selectedColor == Colors.red ? const Icon(Icons.check) : null,
                     ),
                   ),
-                  SizedBox(width: 10),
+                  const SizedBox(width: 10),
                   GestureDetector(
                     onTap: () {
                       setState(() {

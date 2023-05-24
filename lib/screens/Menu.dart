@@ -1,6 +1,3 @@
-import 'dart:math';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -23,10 +20,12 @@ class _MenuState extends State<Menu> {
       Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const SizedBox(height: 50,),
+          const SizedBox(height: 30,),
           const Center(
-            child: Text('Projects',style: TextStyle(fontSize: 20,color: Colors.black),),
+            child: Text('Projects',style: TextStyle(fontSize: 22,color: Colors.black),),
           ),
+          const SizedBox(height: 20,),
+
           FutureBuilder(
             future: SharedPreferences.getInstance(),
             builder: (BuildContext context, AsyncSnapshot<SharedPreferences> snapshot) {

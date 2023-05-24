@@ -168,23 +168,11 @@ class _MonthTabState extends State<MonthTab> {
                                             blurRadius: 3.5),
                                       ]),
                                   child: Padding(
-                                    padding: EdgeInsets.symmetric(
+                                    padding: const EdgeInsets.symmetric(
                                         horizontal: 15, vertical: 10),
                                     child: Row(
                                       children: [
-                                        // Checkbox(
-                                        //   value: showButtons,
-                                        //   onChanged: (newValue) {
-                                        //     setState(() {
-                                        //       showButtons = !showButtons;
-                                        //     });
-                                        //   },
-                                        //   shape: RoundedRectangleBorder(
-                                        //     borderRadius: BorderRadius.circular(100),
-                                        //   ),
-                                        //   checkColor: Colors.blue,
-                                        // ),
-                                        SizedBox(width: 20),
+                                        const SizedBox(width: 20),
                                         Expanded(
                                           child: Column(
                                             crossAxisAlignment:

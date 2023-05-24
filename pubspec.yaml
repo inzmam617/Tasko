@@ -41,6 +41,13 @@ dependencies:
   table_calendar: ^3.0.1
   shared_preferences: ^2.1.1
   flutter_clean_calendar: ^1.1.0
+  flutter_launcher_icons: ^0.13.1
+  rename: ^2.1.1
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/splash.jpeg"
 
 
 dev_dependencies:
@@ -54,6 +61,7 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
+
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

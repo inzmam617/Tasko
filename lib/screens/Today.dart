@@ -14,13 +14,13 @@ class _TodayState extends State<Today> {
   @override
   void initState() {
     super.initState();
-    initiliaze();
+    initialize();
   }
 
 
   List<String>? tasks;
 
-  initiliaze() async {
+  initialize() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     tasks = prefs.getStringList("tasks");
 
@@ -72,6 +72,7 @@ class _TodayState extends State<Today> {
                         String formattedDate = DateFormat('yyyy-MM-dd').format(dateTime);
                         String monthselected =
                         parts[7].substring("monthselected: ".length);
+                        print(monthselected);
                         if (monthselected == 'false'){
                           return Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
@@ -148,7 +149,7 @@ class _TodayState extends State<Today> {
 
                         }
                         else{
-                          return const Center(child: Text("No Tasks for today"),);
+                          return const Center();
                         }
 
                       },
